@@ -41,6 +41,8 @@ function loadConfig() {
   }
   return {
     ...parsed.data,
+    // Honour the platform-provided PORT (Render, Heroku, etc.); fall back to PROXY_PORT.
+    PROXY_PORT: process.env.PORT ? Number(process.env.PORT) : parsed.data.PROXY_PORT,
     isProd: parsed.data.NODE_ENV === "production",
     allowedOrigins: parsed.data.ALLOWED_ORIGINS.split(",").map((s) => s.trim()),
   };

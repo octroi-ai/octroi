@@ -1,0 +1,21 @@
+# Render Blueprint — deploys the Octroi proxy (Hono/Bun) for FREE (no card).
+# New on Render → Blueprint → connect this repo → it reads this file.
+# Then set the two secret env vars (DATABASE_URL, ENCRYPTION_KEY) in the dashboard.
+services:
+  - type: web
+    name: octroi-proxy
+    runtime: docker
+    plan: free
+    dockerfilePath: ./apps/proxy/Dockerfile
+    dockerContext: .
+    healthCheckPath: /health/live
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: ALLOWED_ORIGINS
+        value: https://cheerful-unicorn-dba2ff.netlify.app
+      - key: DATABASE_URL
+        sync: false
+      - key: ENCRYPTION_KEY
+        sync: false
