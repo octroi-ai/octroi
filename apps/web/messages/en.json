@@ -1,0 +1,128 @@
+{
+  "Nav": { "login": "log in ↗", "control": "Control", "governance": "Governance", "settings": "Settings", "connected": "connected" },
+  "Dashboard": {
+    "eyebrow": "// control station",
+    "title": "Control",
+    "subtitle": "All your AI traffic, live.",
+    "cost": "cost · 30d",
+    "tokens": "tokens",
+    "latency": "latency",
+    "cache": "cache",
+    "savings": "savings",
+    "compliance": "compliance",
+    "flux30": "flux · 30 days",
+    "through": "requests through"
+  },
+  "Charts": {
+    "nodata": "No data available for this period",
+    "dailyCost": "Daily cost (USD)",
+    "modelSplit": "Split by model",
+    "providerCost": "Cost by provider (USD)",
+    "cost": "Cost",
+    "tokens": "Tokens",
+    "share": "Share"
+  },
+  "TokenOps": {
+    "eyebrow": "// tokenops",
+    "title": "TokenOps",
+    "desc": "Cost optimization and consumption tracking",
+    "warnCacheLow": "Low cache rate ({rate}%). Enable semantic cache to cut costs.",
+    "byModel": "consumption by model",
+    "model": "model", "provider": "provider", "tokens": "tokens", "cost": "cost", "requests": "requests",
+    "loading": "loading…", "nodata": "no data",
+    "totalReq": "total requests", "cachedReq": "cached requests", "cacheRate": "cache rate"
+  },
+  "Compliance": {
+    "eyebrow": "// governance",
+    "title": "Compliance · EU AI Act",
+    "desc": "Regulatory compliance and automated audit",
+    "scoreGlobal": "global compliance score",
+    "systemsCompliant": "{a}/{b} systems compliant",
+    "breakdown": "breakdown",
+    "compliant": "compliant", "nonCompliant": "non-compliant", "toReview": "to review",
+    "actionsRequired": "actions required",
+    "allCompliant": "All systems are compliant.",
+    "nonCompliantMsg": "{n} non-compliant system(s) need immediate attention.",
+    "reviewMsg": "{n} system(s) awaiting review.",
+    "systemsTable": "registered AI systems",
+    "system": "system", "riskLevel": "risk level", "checks": "checks", "status": "status", "action": "action",
+    "runAudit": "run audit", "auditing": "auditing…", "noSystems": "no system registered", "loading": "loading…",
+    "risk_unacceptable": "Unacceptable", "risk_high": "High risk", "risk_limited": "Limited risk", "risk_minimal": "Minimal risk", "risk_not_assessed": "Not assessed",
+    "status_compliant": "Compliant", "status_non_compliant": "Non-compliant", "status_review_needed": "To review"
+  },
+  "Common": { "error": "Could not reach the API" },
+  "Broker": {
+    "eyebrow": "// broker",
+    "title": "Broker",
+    "desc": "Provider registry & smart routing — add any provider as config.",
+    "total": "providers",
+    "add": "add a provider",
+    "p_provider": "provider", "p_kind": "type", "p_protocol": "protocol", "p_region": "region", "p_models": "models", "p_status": "status",
+    "on": "on", "off": "off",
+    "kind_closed": "closed", "kind_open": "open", "kind_aggregator": "aggregator", "kind_self-hosted": "self-hosted",
+    "f_id": "id (e.g. my-llm)", "f_name": "name", "f_baseUrl": "base URL", "f_submit": "+ add", "f_adding": "adding…",
+    "loading": "loading…", "nodata": "no provider"
+  },
+  "Esg": {
+    "eyebrow": "// esg", "title": "ESG", "desc": "Carbon footprint & environmental certification",
+    "co2": "total footprint", "co2sub": "last 30 days",
+    "energy": "energy used", "energysub": "GPU + PUE estimate",
+    "pue": "avg PUE", "puesub": "power usage effectiveness",
+    "requests": "requests", "requestssub": "over the period",
+    "certTitle": "Green Token certificate", "certDesc": "Generate a certificate for the last 30 days.",
+    "certBtn": "generate certificate", "certGen": "generating…",
+    "certOk": "Certificate generated successfully.", "certErr": "Certificate generation failed."
+  },
+  "Settings": {
+    "eyebrow": "// settings", "title": "Settings", "desc": "Organization & API keys.",
+    "org": "organization", "email": "email", "userId": "user id",
+    "providers": "provider keys", "providersDesc": "Add an API key per provider — encrypted at rest.",
+    "save": "save", "keyPlaceholder": "{provider} API key",
+    "integration": "quick integration", "integrationDesc": "Just swap the base URL of your OpenAI/Anthropic client:"
+  },
+  "Hero": {
+    "eyebrow": "all ai traffic · one gate",
+    "title1": "All your AI.",
+    "title2": "One gate.",
+    "subtitle": "Octroi meters, routes and governs every AI call your company makes — every provider, every region, every use case. The day one cuts you off, you don't go down. One control point, everywhere.",
+    "ctaPrimary": "↗ connect in one line",
+    "ctaSecondary": "see the flux",
+    "tag1": "finops",
+    "tag2": "governance",
+    "tag3": "no lock-in"
+  },
+  "Gate": {
+    "live": "live flux",
+    "region": "multi-region · global",
+    "traversed": "requests through",
+    "saved": "saved",
+    "savings": "−34% cost",
+    "fallback": "fallback ready"
+  },
+  "Rails": {
+    "heading": "what passes through the gate",
+    "count": "04 functions",
+    "meter_t": "Meter",
+    "meter_d": "Cost per project, team and feature. Hard-capped budgets, alerts, forecasting.",
+    "meter_m": "−34% bill",
+    "route_t": "Route",
+    "route_d": "Best model, residency of your choice, automatic fallback when a provider cuts you off.",
+    "route_m": "0 dependency",
+    "govern_t": "Govern",
+    "govern_d": "AI-system registry auto-fed by traffic, compliance (EU AI Act & frameworks to come), timestamped audit.",
+    "govern_m": "AI Act +",
+    "everywhere_t": "Everywhere",
+    "everywhere_d": "Multi-provider, multi-region, every use case. Data residency wherever you want. Zero lock-in.",
+    "everywhere_m": "global"
+  },
+  "Closing": {
+    "title1": "Plug in your AI traffic.",
+    "title2": "Take back control in an afternoon.",
+    "ctaPrimary": "↗ connect in one line",
+    "ctaSecondary": "talk to a human"
+  },
+  "Footer": {
+    "tagline": "control plane for all your AI",
+    "meta": "© 2026 · multi-region · multi-provider"
+  }
+}

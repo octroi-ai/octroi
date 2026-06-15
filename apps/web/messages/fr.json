@@ -1,0 +1,128 @@
+{
+  "Nav": { "login": "connexion ↗", "control": "Contrôle", "governance": "Gouvernance", "settings": "Réglages", "connected": "connecté" },
+  "Dashboard": {
+    "eyebrow": "// poste de contrôle",
+    "title": "Contrôle",
+    "subtitle": "Tout votre trafic IA, en direct.",
+    "cost": "coût · 30j",
+    "tokens": "tokens",
+    "latency": "latence",
+    "cache": "cache",
+    "savings": "économies",
+    "compliance": "compliance",
+    "flux30": "flux · 30 jours",
+    "through": "req traversées"
+  },
+  "Charts": {
+    "nodata": "Aucune donnée disponible pour cette période",
+    "dailyCost": "Coût quotidien (USD)",
+    "modelSplit": "Répartition par modèle",
+    "providerCost": "Coût par fournisseur (USD)",
+    "cost": "Coût",
+    "tokens": "Tokens",
+    "share": "Part"
+  },
+  "TokenOps": {
+    "eyebrow": "// tokenops",
+    "title": "TokenOps",
+    "desc": "Optimisation des coûts et suivi de consommation",
+    "warnCacheLow": "Taux de cache bas ({rate}%). Activez le cache sémantique pour réduire les coûts.",
+    "byModel": "consommation par modèle",
+    "model": "modèle", "provider": "fournisseur", "tokens": "tokens", "cost": "coût", "requests": "requêtes",
+    "loading": "chargement…", "nodata": "aucune donnée",
+    "totalReq": "total requêtes", "cachedReq": "requêtes en cache", "cacheRate": "taux de cache"
+  },
+  "Compliance": {
+    "eyebrow": "// gouvernance",
+    "title": "Compliance · EU AI Act",
+    "desc": "Conformité réglementaire et audit automatisé",
+    "scoreGlobal": "score global de conformité",
+    "systemsCompliant": "{a}/{b} systèmes conformes",
+    "breakdown": "répartition",
+    "compliant": "conformes", "nonCompliant": "non conformes", "toReview": "à vérifier",
+    "actionsRequired": "actions requises",
+    "allCompliant": "Tous les systèmes sont conformes.",
+    "nonCompliantMsg": "{n} système(s) non conforme(s) nécessitent une attention immédiate.",
+    "reviewMsg": "{n} système(s) en attente de vérification.",
+    "systemsTable": "systèmes IA enregistrés",
+    "system": "système", "riskLevel": "niveau de risque", "checks": "checks", "status": "statut", "action": "action",
+    "runAudit": "lancer audit", "auditing": "audit…", "noSystems": "aucun système enregistré", "loading": "chargement…",
+    "risk_unacceptable": "Inacceptable", "risk_high": "Haut risque", "risk_limited": "Risque limité", "risk_minimal": "Risque minimal", "risk_not_assessed": "Non évalué",
+    "status_compliant": "Conforme", "status_non_compliant": "Non conforme", "status_review_needed": "À vérifier"
+  },
+  "Common": { "error": "Impossible de joindre l'API" },
+  "Broker": {
+    "eyebrow": "// broker",
+    "title": "Broker",
+    "desc": "Catalogue de providers & routage intelligent — ajoutez n'importe quel provider par config.",
+    "total": "providers",
+    "add": "ajouter un provider",
+    "p_provider": "provider", "p_kind": "type", "p_protocol": "protocole", "p_region": "région", "p_models": "modèles", "p_status": "statut",
+    "on": "actif", "off": "inactif",
+    "kind_closed": "fermé", "kind_open": "open", "kind_aggregator": "agrégateur", "kind_self-hosted": "auto-hébergé",
+    "f_id": "id (ex. my-llm)", "f_name": "nom", "f_baseUrl": "URL de base", "f_submit": "+ ajouter", "f_adding": "ajout…",
+    "loading": "chargement…", "nodata": "aucun provider"
+  },
+  "Esg": {
+    "eyebrow": "// esg", "title": "ESG", "desc": "Empreinte carbone & certification environnementale",
+    "co2": "empreinte totale", "co2sub": "30 derniers jours",
+    "energy": "énergie consommée", "energysub": "estimation GPU + PUE",
+    "pue": "PUE moyen", "puesub": "power usage effectiveness",
+    "requests": "requêtes", "requestssub": "sur la période",
+    "certTitle": "Certificat Green Token", "certDesc": "Générez un certificat pour les 30 derniers jours.",
+    "certBtn": "générer un certificat", "certGen": "génération…",
+    "certOk": "Certificat généré avec succès.", "certErr": "Échec de la génération du certificat."
+  },
+  "Settings": {
+    "eyebrow": "// réglages", "title": "Réglages", "desc": "Organisation & clés API.",
+    "org": "organisation", "email": "email", "userId": "id utilisateur",
+    "providers": "clés providers", "providersDesc": "Ajoutez une clé API par provider — chiffrées au repos.",
+    "save": "enregistrer", "keyPlaceholder": "clé API {provider}",
+    "integration": "intégration rapide", "integrationDesc": "Remplacez simplement l'URL de base de votre client OpenAI/Anthropic :"
+  },
+  "Hero": {
+    "eyebrow": "tout le trafic ia · une seule porte",
+    "title1": "Toute votre IA.",
+    "title2": "Une seule porte.",
+    "subtitle": "Octroi mesure, route et gouverne chaque appel IA de votre entreprise — tous fournisseurs, toutes régions, tous usages. Le jour où l'un vous coupe l'accès, vous ne tombez pas. Un seul point de contrôle, partout.",
+    "ctaPrimary": "↗ brancher en 1 ligne",
+    "ctaSecondary": "voir le flux",
+    "tag1": "finops",
+    "tag2": "gouvernance",
+    "tag3": "sans lock-in"
+  },
+  "Gate": {
+    "live": "flux en direct",
+    "region": "multi-régions · global",
+    "traversed": "req traversées",
+    "saved": "économisés",
+    "savings": "−34% coûts",
+    "fallback": "fallback prêt"
+  },
+  "Rails": {
+    "heading": "ce qui passe par la porte",
+    "count": "04 fonctions",
+    "meter_t": "Mètre",
+    "meter_d": "Coût par projet, équipe et feature. Budgets à cap dur, alertes, prévision.",
+    "meter_m": "−34% facture",
+    "route_t": "Route",
+    "route_d": "Meilleur modèle, résidence au choix, fallback automatique quand un fournisseur vous coupe l'accès.",
+    "route_m": "0 dépendance",
+    "govern_t": "Gouverne",
+    "govern_d": "Registre des systèmes IA auto-alimenté par le trafic, conformité (EU AI Act & cadres à venir), audit horodaté.",
+    "govern_m": "AI Act +",
+    "everywhere_t": "Partout",
+    "everywhere_d": "Multi-fournisseurs, multi-régions, tous usages. Résidence des données où vous voulez. Aucun lock-in.",
+    "everywhere_m": "global"
+  },
+  "Closing": {
+    "title1": "Branchez votre trafic IA.",
+    "title2": "Reprenez le contrôle en une après-midi.",
+    "ctaPrimary": "↗ brancher en 1 ligne",
+    "ctaSecondary": "parler à un humain"
+  },
+  "Footer": {
+    "tagline": "plan de contrôle de toute votre IA",
+    "meta": "© 2026 · multi-régions · multi-fournisseurs"
+  }
+}

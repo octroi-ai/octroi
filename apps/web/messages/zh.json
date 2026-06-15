@@ -1,0 +1,128 @@
+{
+  "Nav": { "login": "登录 ↗", "control": "控制台", "governance": "治理", "settings": "设置", "connected": "已连接" },
+  "Dashboard": {
+    "eyebrow": "// 控制台",
+    "title": "控制台",
+    "subtitle": "你的全部 AI 流量，实时。",
+    "cost": "成本 · 30天",
+    "tokens": "tokens",
+    "latency": "延迟",
+    "cache": "缓存",
+    "savings": "节省",
+    "compliance": "合规",
+    "flux30": "流量 · 30天",
+    "through": "已通过请求"
+  },
+  "Charts": {
+    "nodata": "该时间段暂无数据",
+    "dailyCost": "每日成本（USD）",
+    "modelSplit": "按模型分布",
+    "providerCost": "按供应商成本（USD）",
+    "cost": "成本",
+    "tokens": "Tokens",
+    "share": "占比"
+  },
+  "TokenOps": {
+    "eyebrow": "// tokenops",
+    "title": "TokenOps",
+    "desc": "成本优化与用量跟踪",
+    "warnCacheLow": "缓存命中率偏低（{rate}%）。启用语义缓存以降低成本。",
+    "byModel": "按模型用量",
+    "model": "模型", "provider": "供应商", "tokens": "tokens", "cost": "成本", "requests": "请求",
+    "loading": "加载中…", "nodata": "暂无数据",
+    "totalReq": "总请求", "cachedReq": "缓存请求", "cacheRate": "缓存命中率"
+  },
+  "Compliance": {
+    "eyebrow": "// 治理",
+    "title": "合规 · EU AI Act",
+    "desc": "法规合规与自动化审计",
+    "scoreGlobal": "全局合规评分",
+    "systemsCompliant": "{a}/{b} 个系统合规",
+    "breakdown": "分布",
+    "compliant": "合规", "nonCompliant": "不合规", "toReview": "待审查",
+    "actionsRequired": "需采取的措施",
+    "allCompliant": "所有系统均合规。",
+    "nonCompliantMsg": "{n} 个系统不合规，需立即处理。",
+    "reviewMsg": "{n} 个系统待审查。",
+    "systemsTable": "已登记的 AI 系统",
+    "system": "系统", "riskLevel": "风险等级", "checks": "检查", "status": "状态", "action": "操作",
+    "runAudit": "运行审计", "auditing": "审计中…", "noSystems": "暂无已登记系统", "loading": "加载中…",
+    "risk_unacceptable": "不可接受", "risk_high": "高风险", "risk_limited": "有限风险", "risk_minimal": "最低风险", "risk_not_assessed": "未评估",
+    "status_compliant": "合规", "status_non_compliant": "不合规", "status_review_needed": "待审查"
+  },
+  "Common": { "error": "无法连接到 API" },
+  "Broker": {
+    "eyebrow": "// broker",
+    "title": "Broker",
+    "desc": "供应商目录与智能路由——以配置方式添加任意供应商。",
+    "total": "供应商",
+    "add": "添加供应商",
+    "p_provider": "供应商", "p_kind": "类型", "p_protocol": "协议", "p_region": "区域", "p_models": "模型", "p_status": "状态",
+    "on": "启用", "off": "停用",
+    "kind_closed": "闭源", "kind_open": "开放", "kind_aggregator": "聚合", "kind_self-hosted": "自托管",
+    "f_id": "id（如 my-llm）", "f_name": "名称", "f_baseUrl": "基础 URL", "f_submit": "+ 添加", "f_adding": "添加中…",
+    "loading": "加载中…", "nodata": "暂无供应商"
+  },
+  "Esg": {
+    "eyebrow": "// esg", "title": "ESG", "desc": "碳足迹与环境认证",
+    "co2": "总碳足迹", "co2sub": "最近 30 天",
+    "energy": "能耗", "energysub": "GPU + PUE 估算",
+    "pue": "平均 PUE", "puesub": "电能使用效率",
+    "requests": "请求", "requestssub": "本期内",
+    "certTitle": "Green Token 证书", "certDesc": "为最近 30 天生成证书。",
+    "certBtn": "生成证书", "certGen": "生成中…",
+    "certOk": "证书生成成功。", "certErr": "证书生成失败。"
+  },
+  "Settings": {
+    "eyebrow": "// 设置", "title": "设置", "desc": "组织与 API 密钥。",
+    "org": "组织", "email": "邮箱", "userId": "用户 ID",
+    "providers": "供应商密钥", "providersDesc": "为每个供应商添加 API 密钥——静态加密存储。",
+    "save": "保存", "keyPlaceholder": "{provider} API 密钥",
+    "integration": "快速接入", "integrationDesc": "只需替换你的 OpenAI/Anthropic 客户端的基础 URL："
+  },
+  "Hero": {
+    "eyebrow": "所有 AI 流量 · 一道门",
+    "title1": "你的全部 AI。",
+    "title2": "一道门。",
+    "subtitle": "Octroi 计量、路由并治理企业的每一次 AI 调用——覆盖所有供应商、所有地区、所有场景。当某个供应商切断访问时，你不会宕机。一个控制点，无处不在。",
+    "ctaPrimary": "↗ 一行接入",
+    "ctaSecondary": "查看流量",
+    "tag1": "finops",
+    "tag2": "治理",
+    "tag3": "无锁定"
+  },
+  "Gate": {
+    "live": "实时流量",
+    "region": "多区域 · 全球",
+    "traversed": "已通过请求",
+    "saved": "已节省",
+    "savings": "−34% 成本",
+    "fallback": "故障转移就绪"
+  },
+  "Rails": {
+    "heading": "经过这道门的内容",
+    "count": "04 项功能",
+    "meter_t": "计量",
+    "meter_d": "按项目、团队和功能核算成本。硬性预算上限、告警、预测。",
+    "meter_m": "−34% 账单",
+    "route_t": "路由",
+    "route_d": "最优模型、自选数据驻留，供应商切断访问时自动故障转移。",
+    "route_m": "0 依赖",
+    "govern_t": "治理",
+    "govern_d": "由流量自动填充的 AI 系统登记册，合规（EU AI Act 及未来框架），带时间戳的审计。",
+    "govern_m": "AI Act +",
+    "everywhere_t": "无处不在",
+    "everywhere_d": "多供应商、多区域、全场景。数据驻留任你选择。零锁定。",
+    "everywhere_m": "全球"
+  },
+  "Closing": {
+    "title1": "接入你的 AI 流量。",
+    "title2": "一个下午夺回控制权。",
+    "ctaPrimary": "↗ 一行接入",
+    "ctaSecondary": "联系真人"
+  },
+  "Footer": {
+    "tagline": "你全部 AI 的控制平面",
+    "meta": "© 2026 · 多区域 · 多供应商"
+  }
+}

@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+@theme {
+  /* ── Flux — surface de contrôle souveraine ── */
+  --color-background: #0A0D0B;
+  --color-foreground: #E9E7DE;
+  --color-card: #111611;
+  --color-card-foreground: #E9E7DE;
+  --color-primary: #C6F24E;          /* signal lime — la pulsation du metering */
+  --color-primary-foreground: #0A0D0B;
+  --color-secondary: #161C15;
+  --color-secondary-foreground: #C9CEC2;
+  --color-muted: #111611;
+  --color-muted-foreground: #828C7C;
+  --color-accent: #4FE0D0;
+  --color-accent-foreground: #0A0D0B;
+  --color-destructive: #F2557D;
+  --color-border: #1F271D;
+  --color-ring: #C6F24E;
+
+  /* couleurs de flux (catégorielles, routes/politiques) */
+  --color-flux-cyan: #4FE0D0;
+  --color-flux-coral: #F2557D;
+  --color-flux-amber: #E9B23A;
+
+  --radius: 0.5rem;
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, monospace;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  background-image:
+    linear-gradient(rgba(198, 242, 78, 0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(198, 242, 78, 0.022) 1px, transparent 1px);
+  background-size: 46px 46px;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-primary);
+  color: var(--color-background);
+}
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--color-background); }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: #2c3829; }
+
+@keyframes flux-flow {
+  0%   { left: -12%; opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { left: 106%; opacity: 0; }
+}
+
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.2; }
+}
+
+.blink { animation: blink 1.5s ease-in-out infinite; }

@@ -1,0 +1,27 @@
+{
+  "name": "@tokenforge/proxy",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "bun run --hot src/index.ts",
+    "build": "bun build src/index.ts --outdir dist --target bun",
+    "start": "bun run dist/index.js"
+  },
+  "dependencies": {
+    "hono": "^4.7.0",
+    "@hono/zod-validator": "^0.5.0",
+    "@tokenforge/db": "*",
+    "@tokenforge/shared": "*",
+    "@tokenforge/esg-engine": "*",
+    "zod": "^3.24.0",
+    "ioredis": "^5.4.0",
+    "@clickhouse/client": "^1.8.0",
+    "nanoid": "^5.1.0",
+    "crypto-js": "^4.2.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/crypto-js": "^4.2.0",
+    "typescript": "^5.7.0"
+  }
+}

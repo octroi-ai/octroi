@@ -1,0 +1,13 @@
+<clickhouse>
+  <!-- DEV ONLY: allow the `default` user from any network so the proxy (running
+       outside the container) can reach ClickHouse over HTTP without a password.
+       For production, use a real password (CLICKHOUSE_PASSWORD) and restrict networks. -->
+  <users>
+    <default>
+      <networks>
+        <ip>::/0</ip>
+      </networks>
+      <access_management>1</access_management>
+    </default>
+  </users>
+</clickhouse>

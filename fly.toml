@@ -1,0 +1,36 @@
+# Octroi — proxy (Hono/Bun) on Fly.io.
+# Deploy FROM THE REPO ROOT (the Dockerfile uses the monorepo as build context):
+#   fly launch --no-deploy --copy-config --name octroi-proxy   # first time
+#   fly secrets set DATABASE_URL=... REDIS_URL=... CLICKHOUSE_URL=... CLICKHOUSE_PASSWORD=... \
+#                   ENCRYPTION_KEY=... ALLOWED_ORIGINS=https://app.octroi.io \
+#                   OPENAI_API_KEY=... ANTHROPIC_API_KEY=...
+#   fly deploy
+
+app = "octroi-proxy"
+primary_region = "cdg"
+
+[build]
+  dockerfile = "apps/proxy/Dockerfile"
+
+[env]
+  NODE_ENV = "production"
+  PROXY_PORT = "8787"
+  CLICKHOUSE_DB = "tokenforge"
+
+[http_service]
+  internal_port = 8787
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [[http_service.checks]]
+    path = "/health/live"
+    interval = "15s"
+    timeout = "3s"
+    grace_period = "10s"
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory = "512mb"
