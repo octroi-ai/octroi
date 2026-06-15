@@ -5,10 +5,11 @@ import { createServerClient, type CookieOptions } from "@supabase/ssr";
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request });
 
-  // Dev local : aucun Supabase réel configuré → on n'impose pas l'auth (sinon /dashboard redirige toujours).
+  // Demo mode (public read-only demo) or local dev → skip the auth guard.
   if (
-    process.env.NODE_ENV !== "production" &&
-    (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").includes("localhost")
+    process.env.NEXT_PUBLIC_DEMO_MODE === "1" ||
+    (process.env.NODE_ENV !== "production" &&
+      (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").includes("localhost"))
   ) {
     return response;
   }
