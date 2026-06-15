@@ -1,0 +1,8 @@
+# Netlify — deploys the web app (apps/web) from this npm-workspaces monorepo.
+# Netlify installs the whole workspace from the repo-root lockfile automatically.
+[build]
+  base = "apps/web"
+  command = "npm run build"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"

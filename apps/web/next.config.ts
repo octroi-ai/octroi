@@ -9,7 +9,9 @@ const withNextIntl = createNextIntlPlugin();
 const monorepoRoot = path.join(__dirname, "..", "..");
 
 const nextConfig: NextConfig = {
-  output: "standalone",
+  // standalone output is for self-hosting/Docker (Fly.io). Netlify uses its own
+  // Next adapter and must NOT receive standalone output.
+  ...(process.env.NETLIFY ? {} : { output: "standalone" as const }),
   outputFileTracingRoot: monorepoRoot,
   turbopack: { root: monorepoRoot },
   transpilePackages: ["@tokenforge/ui", "@tokenforge/shared", "@tokenforge/db"],
