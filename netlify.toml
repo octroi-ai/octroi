@@ -1,9 +1,10 @@
-# Netlify — Octroi web (Next.js) in an npm-workspaces monorepo.
-# No `base`: install at the repo ROOT so internal @tokenforge/* workspaces resolve,
-# then build ONLY the web workspace (root `turbo build` would also build the Bun proxy).
+# Netlify — Octroi web. Turborepo monorepo: `base` designates the package to build;
+# Netlify auto-installs dependencies at the repo ROOT (so @tokenforge/* workspaces resolve)
+# and builds only this package.
 [build]
-  command = "npm install && npm run build --workspace=@tokenforge/web"
-  publish = "apps/web/.next"
+  base = "apps/web"
+  command = "next build"
+  publish = ".next"
 
 [build.environment]
   NODE_VERSION = "20"
