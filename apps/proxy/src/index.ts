@@ -8,6 +8,7 @@ import { analyticsRoutes } from "./routes/analytics";
 import { esgRoutes } from "./routes/esg";
 import { complianceRoutes } from "./routes/compliance";
 import { brokerRoutes } from "./routes/broker";
+import { authRoutes } from "./routes/auth";
 import { authMiddleware } from "./middleware/auth";
 import { rateLimitMiddleware } from "./middleware/rate-limit";
 import { loggingMiddleware } from "./middleware/logging";
@@ -102,6 +103,9 @@ app.get("/health/ready", async (c) => {
     return c.json({ status: "error" }, 503);
   }
 });
+
+// Public account endpoints (register / login) — no API key required.
+app.route("/auth", authRoutes);
 
 // API v1 routes — require authentication
 const api = new Hono();

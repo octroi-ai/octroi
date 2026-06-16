@@ -51,6 +51,7 @@ export const users = pgTable("users", {
   name: text("name"),
   role: roleEnum("role").notNull().default("member"),
   avatarUrl: text("avatar_url"),
+  passwordHash: text("password_hash"),
   supabaseUserId: text("supabase_user_id").unique(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
