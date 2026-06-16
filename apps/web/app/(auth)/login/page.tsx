@@ -3,12 +3,8 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { signInWithEmail } from "../../../lib/auth";
-import { AUTH_CONFIGURED } from "../../../lib/auth-config";
-
-// No real auth backend (public demo) → the login enters the live demo directly.
-const DEMO = process.env.NEXT_PUBLIC_DEMO_MODE === "1";
-const OPEN_ACCESS = DEMO || !AUTH_CONFIGURED;
+import { useTranslations } from "next-intl";
+import { loginAccount, enterDemo } from "../../../lib/session";
 
 function Mark() {
   return (
@@ -21,6 +17,7 @@ function Mark() {
 }
 
 export default function LoginPage() {
+  const t = useTranslations("Auth");
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -30,19 +27,20 @@ export default function LoginPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    if (OPEN_ACCESS) {
-      router.push("/dashboard");
-      return;
-    }
     setLoading(true);
     try {
-      await signInWithEmail(email, password);
+      await loginAccount(email, password);
       router.push("/dashboard");
     } catch (err: any) {
-      setError(err.message || "Identifiants invalides");
+      setError(err.message || "Erreur");
     } finally {
       setLoading(false);
     }
+  }
+
+  function demo() {
+    enterDemo();
+    router.push("/dashboard");
   }
 
   const inputCls =
@@ -65,25 +63,14 @@ export default function LoginPage() {
           <div className="leading-tight">
             <div className="text-lg font-semibold tracking-tight">Octroi</div>
             <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--color-muted-foreground)]">
-              AI control plane
+              {t("tagline")}
             </div>
           </div>
         </Link>
 
         <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)] p-7 shadow-2xl">
-          <div className="mb-1 flex items-center justify-between">
-            <h1 className="text-base font-semibold">Connexion</h1>
-            {OPEN_ACCESS && (
-              <span className="rounded-full border border-[var(--color-primary)]/40 bg-[var(--color-primary)]/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-[var(--color-primary)]">
-                démo
-              </span>
-            )}
-          </div>
-          <p className="mb-6 text-xs text-[var(--color-muted-foreground)]">
-            {OPEN_ACCESS
-              ? "Accès libre à la démonstration — aucune donnée requise."
-              : "Accédez à votre plan de contrôle IA."}
-          </p>
+          <h1 className="mb-1 text-base font-semibold">{t("loginTitle")}</h1>
+          <p className="mb-6 text-xs text-[var(--color-muted-foreground)]">{t("loginSubtitle")}</p>
 
           {error && (
             <div className="mb-4 rounded-lg border border-[var(--color-destructive)]/40 bg-[var(--color-destructive)]/10 p-3 text-sm text-[var(--color-destructive)]">
@@ -91,37 +78,42 @@ export default function LoginPage() {
             </div>
           )}
 
-          {OPEN_ACCESS ? (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className={labelCls}>{t("email")}</label>
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t("emailPlaceholder")} required className={inputCls} />
+            </div>
+            <div>
+              <label className={labelCls}>{t("password")}</label>
+              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required className={inputCls} />
+            </div>
             <button
-              onClick={() => router.push("/dashboard")}
-              className="mb-2 w-full rounded-lg bg-[var(--color-primary)] py-2.5 text-sm font-semibold text-[var(--color-primary-foreground)] transition-opacity hover:opacity-90"
+              type="submit"
+              disabled={loading}
+              className="w-full rounded-lg bg-[var(--color-primary)] py-2.5 text-sm font-semibold text-[var(--color-primary-foreground)] transition-opacity hover:opacity-90 disabled:opacity-50"
             >
-              Entrer dans la démo →
+              {loading ? t("signingIn") : t("signIn")}
             </button>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className={labelCls}>Email</label>
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="vous@entreprise.com" required className={inputCls} />
-              </div>
-              <div>
-                <label className={labelCls}>Mot de passe</label>
-                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required className={inputCls} />
-              </div>
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full rounded-lg bg-[var(--color-primary)] py-2.5 text-sm font-semibold text-[var(--color-primary-foreground)] transition-opacity hover:opacity-90 disabled:opacity-50"
-              >
-                {loading ? "Connexion…" : "Se connecter"}
-              </button>
-            </form>
-          )}
+          </form>
+
+          <div className="relative my-5">
+            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-[var(--color-border)]" /></div>
+            <div className="relative flex justify-center">
+              <span className="bg-[var(--color-card)] px-2 font-mono text-[10px] uppercase tracking-widest text-[var(--color-muted-foreground)]">{t("or")}</span>
+            </div>
+          </div>
+
+          <button
+            onClick={demo}
+            className="w-full rounded-lg border border-[var(--color-border)] py-2.5 text-sm font-medium transition-colors hover:border-[var(--color-muted-foreground)] hover:bg-[var(--color-secondary)]"
+          >
+            {t("viewDemo")} →
+          </button>
 
           <p className="mt-6 text-center text-sm text-[var(--color-muted-foreground)]">
-            Pas de compte ?{" "}
+            {t("noAccount")}{" "}
             <Link href="/register" className="text-[var(--color-primary)] hover:underline">
-              Créer un compte
+              {t("createAccount")}
             </Link>
           </p>
         </div>

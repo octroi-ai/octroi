@@ -18,12 +18,24 @@ class ApiClient {
     this.apiKey = key;
   }
 
+  // Always read the live session key from the cookie so requests made right
+  // after login use the new key (this singleton is created once at import).
+  private currentKey(): string | null {
+    if (this.apiKey) return this.apiKey;
+    if (typeof document !== "undefined") {
+      const m = document.cookie.match(/(?:^|; )octroi_key=([^;]*)/);
+      if (m) return decodeURIComponent(m[1]);
+    }
+    return process.env.NEXT_PUBLIC_DEV_API_KEY || null;
+  }
+
   private async request<T>(path: string, options?: RequestInit): Promise<T> {
+    const key = this.currentKey();
     const res = await fetch(`${API_BASE}${path}`, {
       ...options,
       headers: {
         "Content-Type": "application/json",
-        ...(this.apiKey ? { "X-Octroi-Key": this.apiKey } : {}),
+        ...(key ? { "X-Octroi-Key": key } : {}),
         ...options?.headers,
       },
     });
@@ -73,8 +85,7 @@ class ApiClient {
 
 export const apiClient = new ApiClient();
 
-// Dev convenience: authenticate automatically with a local dev key when provided.
-const devKey = process.env.NEXT_PUBLIC_DEV_API_KEY;
-if (devKey) apiClient.setApiKey(devKey);
+// The key is resolved per-request from the session cookie (set at login/demo),
+// falling back to NEXT_PUBLIC_DEV_API_KEY — see ApiClient.currentKey().
 
 export { ApiError };

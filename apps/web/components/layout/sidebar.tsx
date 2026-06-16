@@ -22,7 +22,7 @@ const TELEMETRY = [
 
 export function Sidebar() {
   const pathname = usePathname();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const t = useTranslations("Nav");
 
   return (
@@ -67,6 +67,12 @@ export function Sidebar() {
         </div>
         <div className="mt-3 truncate font-mono text-[11px] text-foreground">{user?.email ?? "demo@octroi.io"}</div>
         <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">eu-west-3 · {t("connected")}</div>
+        <button
+          onClick={logout}
+          className="mt-3 w-full rounded-md border border-border py-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:border-muted-foreground hover:text-foreground"
+        >
+          {t("signOut")}
+        </button>
       </div>
     </aside>
   );

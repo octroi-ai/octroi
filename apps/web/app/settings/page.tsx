@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { Header } from "@/components/layout/header";
 import { useAuth } from "@/providers/auth-provider";
+import { getApiKey } from "@/lib/session";
 
 const PROVIDERS = ["OpenAI", "Anthropic", "Mistral", "Google", "Cohere"];
 
@@ -47,7 +48,7 @@ export default function SettingsPage() {
             </div>
             <div>
               <label className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">{t("userId")}</label>
-              <input type="text" value={user?.id ?? "dev"} readOnly className={`mt-1 ${inputCls}`} />
+              <input type="text" value={(getApiKey()?.slice(0, 14) ?? "—") + "…"} readOnly className={`mt-1 ${inputCls}`} />
             </div>
           </div>
         </Panel>

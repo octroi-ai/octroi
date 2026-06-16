@@ -1,56 +1,37 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { createBrowserClient } from "@supabase/ssr";
-import type { User, Session } from "@supabase/supabase-js";
-import { AUTH_CONFIGURED, AUTH_URL, AUTH_ANON } from "../lib/auth-config";
+import { getEmail, logout as clearSession } from "../lib/session";
 
-interface AuthContext {
-  user: User | null;
-  session: Session | null;
+interface AuthContextValue {
+  user: { email: string } | null;
   loading: boolean;
+  logout: () => void;
 }
 
-const AuthContext = createContext<AuthContext>({
+const AuthContext = createContext<AuthContextValue>({
   user: null,
-  session: null,
   loading: true,
+  logout: () => {},
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<{ email: string } | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Public demo: no Supabase auth configured → never construct a client
-    // (it would throw "URL and API key are required" and crash the app).
-    if (!AUTH_CONFIGURED) {
-      setLoading(false);
-      return;
-    }
-
-    const supabase = createBrowserClient(AUTH_URL!, AUTH_ANON!);
-
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        setLoading(false);
-      }
-    );
-
-    return () => subscription.unsubscribe();
+    const email = getEmail();
+    setUser(email ? { email } : null);
+    setLoading(false);
   }, []);
 
+  function logout() {
+    clearSession();
+    window.location.href = "/login";
+  }
+
   return (
-    <AuthContext.Provider value={{ user, session, loading }}>
+    <AuthContext.Provider value={{ user, loading, logout }}>
       {children}
     </AuthContext.Provider>
   );
