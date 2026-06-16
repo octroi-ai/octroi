@@ -1,10 +1,12 @@
-# Netlify — Octroi web. npm-workspace monorepo: build from the REPO ROOT so the
-# root `npm install` links the @tokenforge/* workspaces, then build only the web
-# package and publish its .next. (Setting base=apps/web makes Netlify install
-# only inside apps/web, where the workspace packages don't resolve → build fails.)
+# Netlify — Octroi web (Turborepo / npm-workspace monorepo).
+# Reliable path: deploy with the Netlify CLI from apps/web (`netlify deploy
+# --prod --build`), which builds against the root-installed workspaces.
+# Git auto-deploy from this monorepo needs the repo reconnected via Netlify's
+# GitHub App (dashboard) so its monorepo wizard sets base + workspace install.
 [build]
-  command = "npm run build -w @tokenforge/web"
-  publish = "apps/web/.next"
+  base = "apps/web"
+  command = "next build"
+  publish = ".next"
 
 [build.environment]
   NODE_VERSION = "20"
