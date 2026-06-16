@@ -81,9 +81,13 @@ export const DEFAULT_GPU_TDP: Record<string, number> = {
   L40S: 350,
 };
 
-// EU energy grid carbon intensity (gCO2/kWh) by country
+// Electricity grid carbon intensity (gCO2/kWh) by country. EU-focused but
+// includes the non-EU regions referenced by CLOUD_REGION_COUNTRY (GB, US) so
+// those regions don't silently fall back to the generic DEFAULT.
 export const EU_GRID_CARBON_INTENSITY: Record<string, number> = {
   FR: 56,  // France (nuclear)
+  GB: 207, // United Kingdom
+  US: 369, // United States (national average)
   DE: 338, // Germany
   ES: 150, // Spain
   IT: 233, // Italy

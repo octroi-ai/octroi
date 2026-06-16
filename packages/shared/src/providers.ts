@@ -160,3 +160,9 @@ export function getSeedProvider(id: string): ProviderDefinition | undefined {
 export function findModel(def: ProviderDefinition, modelId: string): ProviderModel | undefined {
   return def.models.find((m) => m.id === modelId);
 }
+
+// Resolve which catalogue provider owns a given model id. Used by the router to
+// pick the right provider from `body.model` instead of defaulting by protocol.
+export function findProviderByModel(modelId: string): ProviderDefinition | undefined {
+  return PROVIDER_CATALOG.find((p) => p.models.some((m) => m.id === modelId));
+}

@@ -24,16 +24,24 @@ export interface AuditResult {
   globalRecommendations: string[];
 }
 
-// EU AI Act risk categories
+// EU AI Act risk categories (Annex III). Terms are matched on whole-word /
+// whole-phrase boundaries to avoid substring false positives — e.g. a "data
+// migration tool" must NOT be flagged high-risk on the word "migration", and a
+// "next-generation" product must NOT be flagged limited on "generation".
 const HIGH_RISK_PURPOSES = [
   "biometric identification",
   "critical infrastructure",
   "education",
   "employment",
+  "recruitment",
   "essential services",
+  "credit scoring",
   "law enforcement",
-  "migration",
-  "justice",
+  "migration control",
+  "asylum",
+  "border control",
+  "administration of justice",
+  "judicial",
   "democratic processes",
 ];
 
@@ -44,26 +52,30 @@ const UNACCEPTABLE_PURPOSES = [
   "exploitation of vulnerabilities",
 ];
 
+const LIMITED_INDICATORS = [
+  "chatbot",
+  "content generation",
+  "image generation",
+  "text generation",
+  "synthetic media",
+  "deepfake",
+  "emotion recognition",
+  "emotion",
+  "sentiment",
+];
+
+// Whole-word / whole-phrase, case-insensitive match.
+function mentions(text: string, term: string): boolean {
+  const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`\\b${escaped}\\b`, "i").test(text);
+}
+
 export function assessRiskLevel(system: AiSystemInput): RiskLevel {
-  const purpose = (system.purpose || "").toLowerCase();
-  const description = (system.description || "").toLowerCase();
-  const combined = `${purpose} ${description}`;
+  const combined = `${system.purpose || ""} ${system.description || ""}`;
 
-  // Check unacceptable
-  for (const term of UNACCEPTABLE_PURPOSES) {
-    if (combined.includes(term)) return "unacceptable";
-  }
-
-  // Check high risk
-  for (const term of HIGH_RISK_PURPOSES) {
-    if (combined.includes(term)) return "high";
-  }
-
-  // Check limited risk (chatbots, deepfakes, emotion recognition)
-  const limitedIndicators = ["chatbot", "generation", "deepfake", "emotion", "sentiment"];
-  for (const term of limitedIndicators) {
-    if (combined.includes(term)) return "limited";
-  }
+  if (UNACCEPTABLE_PURPOSES.some((t) => mentions(combined, t))) return "unacceptable";
+  if (HIGH_RISK_PURPOSES.some((t) => mentions(combined, t))) return "high";
+  if (LIMITED_INDICATORS.some((t) => mentions(combined, t))) return "limited";
 
   return "minimal";
 }
@@ -132,7 +144,7 @@ function checkDocumentation(system: AiSystemInput): ComplianceCheckResult {
     status = "non_compliant";
     findings.description = "Description insuffisante du système";
     recommendations.push(
-      "Fournir une description détaillée du système IA conforme à l'Article 11 (min. 200 caractères)"
+      "Fournir une description détaillée du système IA conforme à l'Article 11 (min. 50 caractères, 200+ recommandé)"
     );
   }
 

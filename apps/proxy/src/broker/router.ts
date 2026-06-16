@@ -1,6 +1,6 @@
 import { providerConfigs, routingRules, providerCatalog } from "@tokenforge/db";
 import { eq, and } from "drizzle-orm";
-import { getSeedProvider, findModel, type ProviderDefinition } from "@tokenforge/shared";
+import { getSeedProvider, findModel, findProviderByModel, type ProviderDefinition } from "@tokenforge/shared";
 import { createDecipheriv } from "crypto";
 import { getDb } from "../lib/db";
 import { config } from "../config";
@@ -41,12 +41,22 @@ export async function routeRequest(options: RouteRequestOptions): Promise<RouteR
   let targetProvider = format === "anthropic" ? "anthropic" : "openai";
   let targetModel = body.model || (format === "anthropic" ? "claude-sonnet-4-5-20250929" : "gpt-4o");
 
+  let ruleMatched = false;
   for (const rule of rules) {
     if (matchesConditions(rule.conditionsJson as any, body)) {
       targetProvider = rule.targetProvider;
       targetModel = rule.targetModel;
+      ruleMatched = true;
       break;
     }
+  }
+
+  // No explicit routing rule pinned a provider: derive it from the requested
+  // model id so e.g. a "claude-*" model on the OpenAI-format endpoint is routed
+  // to Anthropic, not sent to OpenAI (which would reject an unknown model).
+  if (!ruleMatched && body.model) {
+    const owner = findProviderByModel(body.model);
+    if (owner) targetProvider = owner.id;
   }
 
   const def = await resolveProvider(orgId, targetProvider);

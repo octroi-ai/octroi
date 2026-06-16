@@ -1,4 +1,8 @@
-// Provider pricing per 1K tokens (USD)
+import { PROVIDER_CATALOG, getSeedProvider, findModel } from "./providers";
+
+// Legacy flat pricing table — kept only as a fallback for a few model ids that
+// predate the provider catalogue (e.g. gpt-4-turbo, o1, command-light).
+// The catalogue in providers.ts is the single source of truth for pricing.
 export const PROVIDER_PRICING: Record<string, Record<string, { input: number; output: number }>> = {
   openai: {
     "gpt-4o": { input: 0.0025, output: 0.01 },
@@ -31,13 +35,24 @@ export const PROVIDER_PRICING: Record<string, Record<string, { input: number; ou
   },
 };
 
+// Resolve per-1k pricing for a provider/model, preferring the catalogue (which
+// covers every registered provider — groq, together, deepseek, xai, …) and
+// falling back to the legacy table. Returns undefined when truly unknown so the
+// caller can decide (we return 0 cost rather than fabricate a price).
+function lookupPricing(provider: string, model: string): { input: number; output: number } | undefined {
+  const def = getSeedProvider(provider);
+  const m = def ? findModel(def, model) : undefined;
+  if (m) return { input: m.inputPer1k, output: m.outputPer1k };
+  return PROVIDER_PRICING[provider]?.[model];
+}
+
 export function calculateCost(
   provider: string,
   model: string,
   inputTokens: number,
   outputTokens: number
 ): number {
-  const pricing = PROVIDER_PRICING[provider]?.[model];
+  const pricing = lookupPricing(provider, model);
   if (!pricing) return 0;
   return (inputTokens / 1000) * pricing.input + (outputTokens / 1000) * pricing.output;
 }
@@ -47,23 +62,33 @@ export function findCheapestProvider(
   inputTokens: number,
   outputTokens: number
 ): { provider: string; model: string; cost: number } {
+  // Candidate model ids per capability tier. Tiers span the whole catalogue —
+  // including low-cost aggregators (Groq, DeepSeek, OpenRouter) — so "cheapest"
+  // genuinely reflects the market, not just the five first-party providers.
   const modelMap: Record<string, string[]> = {
-    large: ["gpt-4o", "claude-sonnet-4-5-20250929", "mistral-large-latest", "gemini-2.0-pro", "command-r-plus"],
-    medium: ["gpt-4o-mini", "claude-haiku-4-5-20251001", "mistral-small-latest", "gemini-2.0-flash", "command-r"],
-    small: ["gpt-4o-mini", "claude-haiku-4-5-20251001", "mistral-small-latest", "gemini-1.5-flash", "command-light"],
+    large: [
+      "gpt-4o", "claude-opus-4-6", "mistral-large-latest", "gemini-2.0-pro",
+      "command-r-plus", "grok-2-latest", "deepseek-reasoner", "llama-3.3-70b-versatile",
+    ],
+    medium: [
+      "gpt-4o-mini", "claude-haiku-4-5-20251001", "mistral-small-latest", "gemini-2.0-flash",
+      "command-r", "deepseek-chat", "sonar", "meta-llama/llama-3.3-70b-instruct",
+    ],
+    small: [
+      "gpt-4o-mini", "claude-haiku-4-5-20251001", "mistral-small-latest", "gemini-2.0-flash",
+      "llama-3.1-8b-instant", "deepseek-chat",
+    ],
   };
 
-  const candidates = modelMap[model_type] || modelMap.medium;
+  const candidates = new Set(modelMap[model_type] || modelMap.medium);
   let cheapest = { provider: "", model: "", cost: Infinity };
 
-  for (const [provider, models] of Object.entries(PROVIDER_PRICING)) {
-    for (const [model, pricing] of Object.entries(models)) {
-      if (candidates.includes(model)) {
-        const cost = (inputTokens / 1000) * pricing.input + (outputTokens / 1000) * pricing.output;
-        if (cost < cheapest.cost) {
-          cheapest = { provider, model, cost };
-        }
-      }
+  for (const def of PROVIDER_CATALOG) {
+    if (def.enabled === false) continue; // skip disabled / unconfigured (azure, ollama, vllm)
+    for (const m of def.models) {
+      if (!candidates.has(m.id)) continue;
+      const cost = (inputTokens / 1000) * m.inputPer1k + (outputTokens / 1000) * m.outputPer1k;
+      if (cost < cheapest.cost) cheapest = { provider: def.id, model: m.id, cost };
     }
   }
 

@@ -78,8 +78,12 @@ export function estimateAvoidedEmissions(
   actualCo2Grams: number,
   totalTokens: number
 ): number {
-  // Market average: assume worst-case scenario (Poland grid + old GPU + high PUE)
-  const marketAvgCo2PerToken = 0.1; // gCO2 per token (market average estimate)
+  // Baseline = a worst-case stack (older A100-class GPU at ~300 tok/s & 400 W,
+  // high datacenter PUE ~1.6, carbon-heavy grid ~600 gCO2/kWh):
+  //   (400 W / 300 tok·s⁻¹ / 3600) × 1.6 × 600/1000 ≈ 3.6e-4 gCO2 per token.
+  // Deriving it from the same physical model keeps "avoided" emissions honest
+  // and CSRD-defensible instead of inflated by orders of magnitude.
+  const marketAvgCo2PerToken = 0.0004; // gCO2 per token (worst-case baseline)
   const baselineCo2 = totalTokens * marketAvgCo2PerToken;
   return Math.max(0, baselineCo2 - actualCo2Grams);
 }
