@@ -1,13 +1,15 @@
 import { Hono } from "hono";
-import { sql } from "drizzle-orm";
+import { requests } from "@tokenforge/db";
+import { eq, and, gte, lte, sql } from "drizzle-orm";
 import { getDb } from "../lib/db";
 import { logger } from "../lib/logger";
 
 export const analyticsRoutes = new Hono();
 
 // Analytics read directly from PostgreSQL (the `requests` table the proxy
-// already persists to). This keeps the dashboards working on the managed
-// Supabase stack without requiring a separate ClickHouse deployment.
+// already persists to), using the same query-builder pattern as the ESG route.
+// This keeps the dashboards working on the managed Supabase stack without a
+// separate ClickHouse deployment.
 
 // GET /v1/analytics/usage
 analyticsRoutes.get("/usage", async (c) => {
@@ -18,26 +20,32 @@ analyticsRoutes.get("/usage", async (c) => {
   const projectId = c.req.query("project_id");
 
   try {
-    const result: any = await getDb().execute(sql`
-      SELECT
-        to_char(date_trunc('day', timestamp), 'YYYY-MM-DD') AS date,
-        provider, model,
-        sum(input_tokens)::float8  AS total_input_tokens,
-        sum(output_tokens)::float8 AS total_output_tokens,
-        sum(input_tokens + output_tokens)::float8 AS total_tokens,
-        sum(cost_usd)::float8 AS total_cost,
-        avg(latency_ms)::float8 AS avg_latency,
-        count(*)::int AS request_count,
-        count(*) FILTER (WHERE cached)::int AS cache_hits
-      FROM requests
-      WHERE org_id = ${orgId}
-        AND timestamp >= ${from} AND timestamp <= ${to}
-        ${model ? sql`AND model = ${model}` : sql``}
-        ${projectId ? sql`AND project_id = ${projectId}` : sql``}
-      GROUP BY 1, provider, model
-      ORDER BY 1 DESC
-    `);
-    const data = Array.isArray(result) ? result : result.rows ?? [];
+    const conditions = [
+      eq(requests.orgId, orgId),
+      gte(requests.timestamp, from),
+      lte(requests.timestamp, to),
+    ];
+    if (model) conditions.push(eq(requests.model, model));
+    if (projectId) conditions.push(eq(requests.projectId, projectId));
+
+    const data = await getDb()
+      .select({
+        date: sql<string>`to_char(date_trunc('day', ${requests.timestamp}), 'YYYY-MM-DD')`,
+        provider: requests.provider,
+        model: requests.model,
+        total_input_tokens: sql<number>`sum(${requests.inputTokens})`,
+        total_output_tokens: sql<number>`sum(${requests.outputTokens})`,
+        total_tokens: sql<number>`sum(${requests.inputTokens} + ${requests.outputTokens})`,
+        total_cost: sql<number>`sum(${requests.costUsd})`,
+        avg_latency: sql<number>`avg(${requests.latencyMs})`,
+        request_count: sql<number>`count(*)`,
+        cache_hits: sql<number>`count(*) filter (where ${requests.cached})`,
+      })
+      .from(requests)
+      .where(and(...conditions))
+      .groupBy(sql`date_trunc('day', ${requests.timestamp})`, requests.provider, requests.model)
+      .orderBy(sql`date_trunc('day', ${requests.timestamp}) desc`);
+
     return c.json({ data, period: { from: from.toISOString(), to: to.toISOString() } });
   } catch (error: any) {
     logger.error("Analytics error", { error: error.message });
@@ -52,18 +60,17 @@ analyticsRoutes.get("/savings", async (c) => {
   const to = new Date(c.req.query("to") || Date.now());
 
   try {
-    const result: any = await getDb().execute(sql`
-      SELECT
-        coalesce(sum(cost_usd), 0)::float8 AS actual_cost,
-        coalesce(sum(cost_usd) FILTER (WHERE cached), 0)::float8 AS cache_savings,
-        count(*)::int AS total_requests,
-        count(*) FILTER (WHERE cached)::int AS cached_requests,
-        coalesce(avg(latency_ms), 0)::float8 AS avg_latency
-      FROM requests
-      WHERE org_id = ${orgId}
-        AND timestamp >= ${from} AND timestamp <= ${to}
-    `);
-    const rows = Array.isArray(result) ? result : result.rows ?? [];
+    const rows = await getDb()
+      .select({
+        actual_cost: sql<number>`coalesce(sum(${requests.costUsd}), 0)`,
+        cache_savings: sql<number>`coalesce(sum(${requests.costUsd}) filter (where ${requests.cached}), 0)`,
+        total_requests: sql<number>`count(*)`,
+        cached_requests: sql<number>`count(*) filter (where ${requests.cached})`,
+        avg_latency: sql<number>`coalesce(avg(${requests.latencyMs}), 0)`,
+      })
+      .from(requests)
+      .where(and(eq(requests.orgId, orgId), gte(requests.timestamp, from), lte(requests.timestamp, to)));
+
     return c.json({ savings: rows[0] || {}, period: { from: from.toISOString(), to: to.toISOString() } });
   } catch (error: any) {
     logger.error("Savings error", { error: error.message });
