@@ -6,6 +6,7 @@ import { organizations, users, apiKeys } from "@tokenforge/db";
 import { eq } from "drizzle-orm";
 import { getDb } from "../lib/db";
 import { hashPassword, verifyPassword, generateApiKey, slugify } from "../lib/credentials";
+import { seedStarterData } from "../lib/seed-org";
 import { logger } from "../lib/logger";
 
 // Public (unauthenticated) account endpoints. Mounted at /auth — NOT behind the
@@ -47,6 +48,13 @@ authRoutes.post("/register", zValidator("json", registerSchema), async (c) => {
 
     const { key, keyHash, keyPrefix } = generateApiKey();
     await db.insert(apiKeys).values({ orgId: org.id, keyHash, keyPrefix, label: "Clé principale" });
+
+    // Populate the new org with realistic starter data (best-effort).
+    try {
+      await seedStarterData(org.id);
+    } catch (seedErr: any) {
+      logger.error("Seed starter data failed", { error: seedErr.message });
+    }
 
     return c.json({ apiKey: key, email, orgId: org.id, orgName: org.name }, 201);
   } catch (error: any) {
