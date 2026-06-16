@@ -16,7 +16,7 @@ import { securityHeaders } from "./middleware/security-headers";
 import { errorHandler } from "./middleware/error-handler";
 import { logger } from "./lib/logger";
 import { getDb } from "./lib/db";
-import { getRedis } from "./lib/redis";
+import { getRedis, REDIS_ENABLED } from "./lib/redis";
 import { getClickHouse } from "./lib/clickhouse";
 
 const app = new Hono();
@@ -55,13 +55,17 @@ app.get("/health", async (c) => {
     checks.db = { status: "error", latency_ms: Date.now() - dbStart };
   }
 
-  // Check Redis
-  const redisStart = Date.now();
-  try {
-    await getRedis().ping();
-    checks.redis = { status: "ok", latency_ms: Date.now() - redisStart };
-  } catch {
-    checks.redis = { status: "error", latency_ms: Date.now() - redisStart };
+  // Check Redis (optional — disabled when no real REDIS_URL is configured)
+  if (REDIS_ENABLED) {
+    const redisStart = Date.now();
+    try {
+      await getRedis().ping();
+      checks.redis = { status: "ok", latency_ms: Date.now() - redisStart };
+    } catch {
+      checks.redis = { status: "error", latency_ms: Date.now() - redisStart };
+    }
+  } else {
+    checks.redis = { status: "disabled" };
   }
 
   // Check ClickHouse
@@ -73,7 +77,7 @@ app.get("/health", async (c) => {
     checks.clickhouse = { status: "error", latency_ms: Date.now() - chStart };
   }
 
-  const allHealthy = Object.values(checks).every((c) => c.status === "ok");
+  const allHealthy = Object.values(checks).every((c) => c.status === "ok" || c.status === "disabled");
 
   return c.json(
     {
@@ -119,7 +123,7 @@ logger.info(`Octroi Proxy starting on port ${config.PROXY_PORT}`, {
 const shutdown = async (signal: string) => {
   logger.info(`Received ${signal}, shutting down gracefully...`);
   try {
-    await getRedis().quit();
+    if (REDIS_ENABLED) await getRedis().quit();
     await getClickHouse().close();
   } catch (err) {
     logger.error("Error during shutdown", { error: (err as Error).message });

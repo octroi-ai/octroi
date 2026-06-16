@@ -1,11 +1,12 @@
 import { createHash } from "crypto";
-import { getRedis } from "../lib/redis";
+import { getRedis, REDIS_ENABLED } from "../lib/redis";
 import { logger } from "../lib/logger";
 
 const CACHE_TTL = 3600; // 1 hour
 const CACHE_PREFIX = "tokenforge:cache:";
 
 export async function checkCache(key: string): Promise<any | null> {
+  if (!REDIS_ENABLED) return null;
   try {
     const hash = createHash("sha256").update(key).digest("hex");
     const cached = await getRedis().get(`${CACHE_PREFIX}${hash}`);
@@ -20,6 +21,7 @@ export async function checkCache(key: string): Promise<any | null> {
 }
 
 export async function setCache(key: string, value: any): Promise<void> {
+  if (!REDIS_ENABLED) return;
   try {
     const hash = createHash("sha256").update(key).digest("hex");
     await getRedis().setex(`${CACHE_PREFIX}${hash}`, CACHE_TTL, JSON.stringify(value));
@@ -29,6 +31,7 @@ export async function setCache(key: string, value: any): Promise<void> {
 }
 
 export async function invalidateCache(pattern?: string): Promise<void> {
+  if (!REDIS_ENABLED) return;
   try {
     const redis = getRedis();
     if (pattern) {
