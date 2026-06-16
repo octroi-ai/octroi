@@ -2,7 +2,7 @@ import { requests, projects, carbonFootprints } from "@tokenforge/db";
 import { eq } from "drizzle-orm";
 import { calculateCarbonFootprint } from "@tokenforge/esg-engine";
 import { getDb } from "./db";
-import { getClickHouse } from "./clickhouse";
+import { getClickHouse, CLICKHOUSE_ENABLED } from "./clickhouse";
 import { logger } from "./logger";
 
 const projectCache = new Map<string, string>();
@@ -75,26 +75,28 @@ export async function persistRequest(p: PersistInput): Promise<void> {
       co2Grams: carbon.co2Grams,
     });
 
-    await getClickHouse().insert({
-      table: "requests",
-      values: [
-        {
-          org_id: p.orgId,
-          project_id: projectId,
-          provider: p.provider,
-          model: p.model,
-          region: p.region,
-          input_tokens: p.inputTokens,
-          output_tokens: p.outputTokens,
-          total_tokens: totalTokens,
-          cost_usd: p.costUsd,
-          latency_ms: p.latencyMs,
-          cached: p.cached ? 1 : 0,
-          status_code: 200,
-        },
-      ],
-      format: "JSONEachRow",
-    });
+    if (CLICKHOUSE_ENABLED) {
+      await getClickHouse().insert({
+        table: "requests",
+        values: [
+          {
+            org_id: p.orgId,
+            project_id: projectId,
+            provider: p.provider,
+            model: p.model,
+            region: p.region,
+            input_tokens: p.inputTokens,
+            output_tokens: p.outputTokens,
+            total_tokens: totalTokens,
+            cost_usd: p.costUsd,
+            latency_ms: p.latencyMs,
+            cached: p.cached ? 1 : 0,
+            status_code: 200,
+          },
+        ],
+        format: "JSONEachRow",
+      });
+    }
   } catch (err) {
     logger.error("Persist request error", { error: (err as Error).message });
   }

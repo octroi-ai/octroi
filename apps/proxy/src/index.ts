@@ -17,7 +17,7 @@ import { errorHandler } from "./middleware/error-handler";
 import { logger } from "./lib/logger";
 import { getDb } from "./lib/db";
 import { getRedis, REDIS_ENABLED } from "./lib/redis";
-import { getClickHouse } from "./lib/clickhouse";
+import { getClickHouse, CLICKHOUSE_ENABLED } from "./lib/clickhouse";
 
 const app = new Hono();
 
@@ -68,13 +68,17 @@ app.get("/health", async (c) => {
     checks.redis = { status: "disabled" };
   }
 
-  // Check ClickHouse
-  const chStart = Date.now();
-  try {
-    await getClickHouse().ping();
-    checks.clickhouse = { status: "ok", latency_ms: Date.now() - chStart };
-  } catch {
-    checks.clickhouse = { status: "error", latency_ms: Date.now() - chStart };
+  // Check ClickHouse (optional — analytics read from Postgres)
+  if (CLICKHOUSE_ENABLED) {
+    const chStart = Date.now();
+    try {
+      await getClickHouse().ping();
+      checks.clickhouse = { status: "ok", latency_ms: Date.now() - chStart };
+    } catch {
+      checks.clickhouse = { status: "error", latency_ms: Date.now() - chStart };
+    }
+  } else {
+    checks.clickhouse = { status: "disabled" };
   }
 
   const allHealthy = Object.values(checks).every((c) => c.status === "ok" || c.status === "disabled");
@@ -124,7 +128,7 @@ const shutdown = async (signal: string) => {
   logger.info(`Received ${signal}, shutting down gracefully...`);
   try {
     if (REDIS_ENABLED) await getRedis().quit();
-    await getClickHouse().close();
+    if (CLICKHOUSE_ENABLED) await getClickHouse().close();
   } catch (err) {
     logger.error("Error during shutdown", { error: (err as Error).message });
   }
