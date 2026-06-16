@@ -1,0 +1,22 @@
+name: keep-warm
+
+# Render's free tier spins the proxy down after ~15 min idle, causing a slow
+# cold start on the next request. Ping it every ~10 min to keep it warm so the
+# product feels instant. (GitHub disables scheduled workflows after 60 days of
+# repo inactivity — just re-enable it from the Actions tab if that happens.)
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping proxy liveness
+        run: |
+          curl -fsS --max-time 30 https://octroi-proxy.onrender.com/health/live || true
+      - name: Ping web
+        run: |
+          curl -fsS --max-time 30 https://octroi.netlify.app/ -o /dev/null || true

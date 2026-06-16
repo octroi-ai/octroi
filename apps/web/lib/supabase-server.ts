@@ -1,12 +1,14 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { AUTH_CONFIGURED, AUTH_URL, AUTH_ANON } from "./auth-config";
 
 export async function createSupabaseServer() {
+  if (!AUTH_CONFIGURED) return null;
   const cookieStore = await cookies();
 
   return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    AUTH_URL!,
+    AUTH_ANON!,
     {
       cookies: {
         getAll() {

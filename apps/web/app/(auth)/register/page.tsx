@@ -4,11 +4,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { signUpWithEmail } from "../../../lib/auth";
+import { AUTH_CONFIGURED } from "../../../lib/auth-config";
 
 const DEMO = process.env.NEXT_PUBLIC_DEMO_MODE === "1";
-const ANON = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-const AUTH_READY = !!ANON && ANON !== "demo-anon-placeholder";
-const OPEN_ACCESS = DEMO || !AUTH_READY;
+const OPEN_ACCESS = DEMO || !AUTH_CONFIGURED;
 
 function Mark() {
   return (

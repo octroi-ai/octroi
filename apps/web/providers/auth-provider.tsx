@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { createBrowserClient } from "@supabase/ssr";
 import type { User, Session } from "@supabase/supabase-js";
+import { AUTH_CONFIGURED, AUTH_URL, AUTH_ANON } from "../lib/auth-config";
 
 interface AuthContext {
   user: User | null;
@@ -22,10 +23,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const supabase = createBrowserClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    // Public demo: no Supabase auth configured → never construct a client
+    // (it would throw "URL and API key are required" and crash the app).
+    if (!AUTH_CONFIGURED) {
+      setLoading(false);
+      return;
+    }
+
+    const supabase = createBrowserClient(AUTH_URL!, AUTH_ANON!);
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);

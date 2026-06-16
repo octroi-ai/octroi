@@ -1,12 +1,15 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import { AUTH_CONFIGURED } from "./lib/auth-config";
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request });
 
-  // Demo mode (public read-only demo) or local dev → skip the auth guard.
+  // Demo mode, no auth backend configured, or local dev → skip the auth guard
+  // (and never construct a Supabase client without a real anon key).
   if (
+    !AUTH_CONFIGURED ||
     process.env.NEXT_PUBLIC_DEMO_MODE === "1" ||
     (process.env.NODE_ENV !== "production" &&
       (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").includes("localhost"))
